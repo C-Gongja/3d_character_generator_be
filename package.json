@@ -1,0 +1,11 @@
+{
+	"name": "3d_char_gen_backend",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Taeyoon Kim",
+	"license": "MIT"
+}
