@@ -1,0 +1,26 @@
+{
+	"name": "3d_char_gen_be",
+	"version": "1.0.0",
+	"main": "service.js",
+	"type": "module",
+	"scripts": {
+		"dev": "nodemon ./src/service.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "Taeyoon Kim",
+	"license": "MIT",
+	"description": "",
+	"dependencies": {
+		"cors": "^2.8.5",
+		"dcryptjs": "^1.0.5",
+		"dotenv": "^16.4.7",
+		"express": "^4.21.2",
+		"joi": "^17.13.3",
+		"jsonwebtoken": "^9.0.2",
+		"pg": "^8.13.1"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.9"
+	}
+}
