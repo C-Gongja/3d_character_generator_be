@@ -1,5 +1,4 @@
-import errorHandling from "../middleware/errorHandler.js";
-import { createUserService, getAllUsersService, updateUserService } from "../models/userModel.js";
+import { createUserService, getAllUsersService, getUserByIdService, updateUserService } from "../../models/userModel.js";
 
 //standardized response function 
 const handleResponse = (res, status, message, data = null) => {
@@ -32,7 +31,7 @@ export const getAllUsers = async (req, res, next) => {
 
 export const getUserById = async (req, res, next) => {
 	try {
-		const user = await getUserById(req.param.id);
+		const user = await getUserByIdService(req.param.id);
 		if (!user) return handleResponse(res, 404, "User not found");
 		handleResponse(res, 201, "user fetched successfully", users);
 	} catch (err) {

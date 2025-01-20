@@ -1,16 +1,20 @@
-import Joi from "joi";
+import pool from "../config/db.js";
 
-const userScheme = Joi.object({
-	name: Joi.string().min(3).required(),
-	email: Joi.string().email().required(),
-});
+// Assuming you have a function to check the database
+const checkDisplayNameUnique = async (displayName) => {
+	const result = await pool.query("SELECT * FROM users WHERE username = $1", [displayName]);
+	return result.rows.length === 0; // true if available, false if taken
+};
 
-const validateUser = (req, res, next) => {
-	const { error } = userScheme.validate(req.body);
-	if (error) return res.status(400).json({
+const validateUser = async (req, res, next) => {
+
+	const checkUsername = await checkDisplayNameUnique(req.body.username);
+	if (!checkUsername) return res.status(400).jason({
 		status: 400,
-		message: error.details[0].messgae,
+		message: "An acconunt with this username already exists.",
 	});
+
+	console.log("validate user successfully");
 	next();
 };
 

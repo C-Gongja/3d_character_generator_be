@@ -4,26 +4,29 @@ import dotenv from "dotenv";
 import pool from './config/db.js';
 
 import userRoutes from "./routes/api/userRoutes.js"
+import authRoutes from "./routes/api/authRoutes.js"
 import errorHandling from './middleware/errorHandler.js';
 import createUserTable from './data/createUserTable.js';
+import { port } from './config/env.js';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5003;
+const PORT = port;
 
 //MIDDLEWARE
 app.use(express.json());
 app.use(cors());
 
+//CREATE TABLES 
+createUserTable();
+
 //ROUTES
+app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes);
 
 //ERROR
 app.use(errorHandling);
-
-//CREATE TABLES 
-createUserTable();
 
 //TESTING POSTGRES
 app.get("/", async (req, res) => {
