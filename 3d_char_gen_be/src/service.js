@@ -16,7 +16,13 @@ const PORT = port;
 
 //MIDDLEWARE
 app.use(express.json());
-app.use(cors());
+
+const corsOptions = {
+	origin: 'http://localhost:3000', // 요청을 허용할 도메인
+	credentials: true, // 쿠키와 인증 정보를 허용
+};
+
+app.use(cors(corsOptions));
 
 //CREATE TABLES 
 createUserTable();

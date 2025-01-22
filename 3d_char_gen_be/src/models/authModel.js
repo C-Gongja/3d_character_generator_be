@@ -36,13 +36,13 @@ export const loginService = async ({ email, password }) => {
 		// 이메일로 사용자 찾기
 		const user = await getUserByEmailService(email);
 		if (!user) {
-			throw new Error('Invalid email or password');
+			throw new Error('check the email account');
 		}
 
 		// 비밀번호 비교
 		const isPasswordValid = await bcrypt.compare(password, user.password);
 		if (!isPasswordValid) {
-			throw new Error('Invalid email or password');
+			throw new Error('wrong password');
 		}
 
 		const userInfo = {
