@@ -5,8 +5,9 @@ import pool from './config/db.js';
 
 import userRoutes from "./routes/api/userRoutes.js"
 import authRoutes from "./routes/api/authRoutes.js"
+import customRoutes from "./routes/api/customRoutes.js"
 import errorHandling from './middleware/errorHandler.js';
-import createUserTable from './data/createUserTable.js';
+import createTablesFromFile from "./data/createTables.js";
 import { port } from './config/env.js';
 
 dotenv.config();
@@ -18,17 +19,20 @@ const PORT = port;
 app.use(express.json());
 
 const corsOptions = {
-	origin: 'http://localhost:3000', // 요청을 허용할 도메인
+	origin: 'http://localhost:5173', // 요청을 허용할 도메인
 	credentials: true, // 쿠키와 인증 정보를 허용
 };
 
 app.use(cors(corsOptions));
 
-//CREATE TABLES 
-createUserTable();
+//여기서 authorization을 하면? 유저가 로그인 했는지 안했는지
+
+//CREATE TABLES
+createTablesFromFile();
 
 //ROUTES
 app.use("/api/auth", authRoutes);
+app.use("/api/custom", customRoutes);
 app.use("/api", userRoutes);
 
 //ERROR

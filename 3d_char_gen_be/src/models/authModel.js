@@ -21,10 +21,10 @@ export const signUpService = async (body) => {
 		};
 
 		// JWT 토큰 생성
-		const token = generateToken(userInfo);
+		const { accessToken, refreshToken } = generateToken(userInfo);
 		console.log(`generate token for ${newUser.name}: ${token}`);
 
-		return { user: newUser, token };
+		return { user: userInfo, accessToken, refreshToken };
 	} catch (error) {
 		throw new Error(error.message);
 	}
@@ -52,9 +52,12 @@ export const loginService = async ({ email, password }) => {
 		};
 
 		// JWT 토큰 생성
-		const token = generateToken(userInfo);
+		const { accessToken, refreshToken } = generateToken(userInfo);
 
-		return { user, token };
+		console.log("Access Token: ", accessToken);
+		console.log("Refresh Token: ", refreshToken);
+
+		return { user: userInfo, accessToken, refreshToken };
 	} catch (error) {
 		throw new Error(error.message);
 	}

@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken";
 import { jwtSecret, jwtExpTime } from "../config/env.js";
 
 export const generateToken = (userInfo) => {
-	const token = jwt.sign(userInfo, jwtSecret, { expiresIn: jwtExpTime });
-	return token;
+	const accessToken = jwt.sign(userInfo, jwtSecret, { expiresIn: jwtExpTime });
+	const refreshToken = jwt.sign(userInfo, jwtSecret, { expiresIn: '' });
+
+	return { accessToken, refreshToken };
 }

@@ -1,1 +1,2 @@
-# 3d_character_generator_be
+# Node.js + GCS (Goole Cloud Service)
+
