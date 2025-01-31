@@ -1,9 +1,14 @@
 import jwt from "jsonwebtoken";
-import { jwtSecret, jwtExpTime } from "../config/env.js";
+import { jwtSecret, jwtAccExpTime, jwtRefExpTime } from "../config/env.js";
 
 export const generateToken = (userInfo) => {
-	const accessToken = jwt.sign(userInfo, jwtSecret, { expiresIn: jwtExpTime });
-	const refreshToken = jwt.sign(userInfo, jwtSecret, { expiresIn: '' });
+	try {
+		const accessToken = jwt.sign(userInfo, jwtSecret, { expiresIn: jwtAccExpTime });
+		const refreshToken = jwt.sign(userInfo, jwtSecret, { expiresIn: jwtRefExpTime });
 
-	return { accessToken, refreshToken };
+		return { accessToken, refreshToken };
+	} catch (error) {
+		console.log("failed generate token: ", error);
+		throw error;
+	}
 }

@@ -31,9 +31,9 @@ export const getAllUsers = async (req, res, next) => {
 
 export const getUserById = async (req, res, next) => {
 	try {
-		const user = await getUserByIdService(req.param.id);
+		const user = await getUserByIdService(req.params.id);
 		if (!user) return handleResponse(res, 404, "User not found");
-		handleResponse(res, 201, "user fetched successfully", users);
+		handleResponse(res, 201, "user fetched successfully", user);
 	} catch (err) {
 		next(err);
 	}
@@ -42,7 +42,7 @@ export const getUserById = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
 	const { name, email } = req.body;
 	try {
-		const updatedUser = await updateUserService(req.param.id, name, email);
+		const updatedUser = await updateUserService(req.params.id, name, email);
 		if (!updatedUser) return handleResponse(res, 404, "User not found");
 		handleResponse(res, 201, "user updated successfully", updatedUser);
 	} catch (err) {

@@ -9,7 +9,7 @@ const checkDisplayNameUnique = async (displayName) => {
 const validateUser = async (req, res, next) => {
 
 	const checkUsername = await checkDisplayNameUnique(req.body.username);
-	if (!checkUsername) return res.status(400).jason({
+	if (!checkUsername) return res.status(400).json({
 		status: 400,
 		message: "An acconunt with this username already exists.",
 	});

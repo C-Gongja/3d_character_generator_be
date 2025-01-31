@@ -12,7 +12,7 @@ export const signUpService = async (body) => {
 		}
 
 		// 사용자 생성
-		const newUser = createUserService(body);
+		const newUser = await createUserService(body);
 
 		const userInfo = {
 			id: newUser.id,
@@ -21,8 +21,7 @@ export const signUpService = async (body) => {
 		};
 
 		// JWT 토큰 생성
-		const { accessToken, refreshToken } = generateToken(userInfo);
-		console.log(`generate token for ${newUser.name}: ${token}`);
+		const { accessToken, refreshToken } = await generateToken(userInfo);
 
 		return { user: userInfo, accessToken, refreshToken };
 	} catch (error) {
@@ -52,7 +51,7 @@ export const loginService = async ({ email, password }) => {
 		};
 
 		// JWT 토큰 생성
-		const { accessToken, refreshToken } = generateToken(userInfo);
+		const { accessToken, refreshToken } = await generateToken(userInfo);
 
 		console.log("Access Token: ", accessToken);
 		console.log("Refresh Token: ", refreshToken);

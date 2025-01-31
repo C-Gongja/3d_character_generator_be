@@ -19,11 +19,14 @@ export const getUserByEmailService = async (email) => {
 export const createUserService = async (body) => {
 	const hashedPassword = await bcrypt.hash(body.password, 10);
 	const result = await pool.query(
-		'INSERT INTO users (name, username, email, password, birthday, created_at) VALUES ($1, $2, $3, $4, $5, $6)',
+		'INSERT INTO users (name, username, email, password, birthday, created_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
 		[body.name, body.username, body.email, hashedPassword, body.birthday, new Date()]
 	);
-	console.log("user create successfully");
-	return result.rows[0];
+	if (result.rows.length > 0) {
+		return result.rows[0];
+	} else {
+		throw new Error("User creation failed");
+	}
 };
 
 export const updateUserService = async (id, name, email) => {
