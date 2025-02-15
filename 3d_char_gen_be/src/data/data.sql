@@ -6,11 +6,6 @@ CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(100) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
   password VARCHAR(255) NOT NULL,
-  bio TEXT,
-	gender VARCHAR(20),
-	serialNum VARCHAR(50),
-	location VARCHAR(100),
-  birthday DATE,
   created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -20,7 +15,7 @@ CREATE TABLE IF NOT EXISTS customGroups (
   name VARCHAR(255) NOT NULL,
   position INT NOT NULL,
 	startingAssetId INT,
-  FOREIGN KEY (startingAssetId) REFERENCES customAssets (id) ON DELETE CASCADE
+  FOREIGN KEY (startingAssetId) REFERENCES customAssets (id) ON DELETE SET NULL
 );
 
 -- customAssets
@@ -31,4 +26,26 @@ CREATE TABLE IF NOT EXISTS customAssets (
   url VARCHAR(255),
   groupId INT NOT NULL,
   FOREIGN KEY (groupId) REFERENCES customGroups (id) ON DELETE CASCADE
+);
+
+-- userCustom
+CREATE TABLE IF NOT EXISTS userCustom (
+	id SERIAL PRIMARY KEY,
+	userid INT NOT NULL,
+	bio TEXT,
+	gender VARCHAR(20),
+	serialNum VARCHAR(50),
+	location VARCHAR(100),
+  birthday DATE,
+	head INT,
+	eyes INT,
+	eyebrows INT,
+	nose INT,
+	mouth INT,
+	ears INT,
+	hair INT,
+	top INT,
+	bottom INT,
+	shoes INT,
+	CONSTRAINT fk_user FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE
 );

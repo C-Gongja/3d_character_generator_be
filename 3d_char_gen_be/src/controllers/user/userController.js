@@ -1,4 +1,11 @@
-import { createUserService, getAllUsersService, getUserByIdService, updateUserService } from "../../models/userModel.js";
+import {
+	createUserService,
+	getAllUsersService,
+	getUserByIdService,
+	getUserCustomByIdService,
+	updateUserService,
+	updateUserCustomService
+} from "../../models/userModel.js";
 
 //standardized response function 
 const handleResponse = (res, status, message, data = null) => {
@@ -43,6 +50,27 @@ export const updateUser = async (req, res, next) => {
 	const { name, email } = req.body;
 	try {
 		const updatedUser = await updateUserService(req.params.id, name, email);
+		if (!updatedUser) return handleResponse(res, 404, "User not found");
+		handleResponse(res, 201, "user updated successfully", updatedUser);
+	} catch (err) {
+		next(err);
+	}
+};
+
+export const getUserCustomById = async (req, res, next) => {
+	try {
+		const getUserCustom = await getUserCustomByIdService(req.params.id);
+		if (!getUserCustom) return handleResponse(res, 404, "User not found");
+		handleResponse(res, 201, "successfully get user custom", getUserCustom);
+	} catch (err) {
+		next(err);
+	}
+};
+
+export const updateUserCustom = async (req, res, next) => {
+	console.log("updateUserCustom start");
+	try {
+		const updatedUser = await updateUserCustomService(req.params.id, req.body);
 		if (!updatedUser) return handleResponse(res, 404, "User not found");
 		handleResponse(res, 201, "user updated successfully", updatedUser);
 	} catch (err) {
