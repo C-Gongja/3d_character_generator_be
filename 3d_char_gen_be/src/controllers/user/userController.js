@@ -4,7 +4,8 @@ import {
 	getUserByIdService,
 	getUserCustomByIdService,
 	updateUserService,
-	updateUserCustomService
+	updateUserCustomService,
+	createUserCustomService,
 } from "../../models/userModel.js";
 
 //standardized response function 
@@ -52,6 +53,15 @@ export const updateUser = async (req, res, next) => {
 		const updatedUser = await updateUserService(req.params.id, name, email);
 		if (!updatedUser) return handleResponse(res, 404, "User not found");
 		handleResponse(res, 201, "user updated successfully", updatedUser);
+	} catch (err) {
+		next(err);
+	}
+};
+
+export const createUserCustom = async (req, res, next) => {
+	try {
+		const newUserCustom = await createUserCustomService(req.params.id, req.body);
+		handleResponse(res, 201, "user custom created successfully", newUserCustom);
 	} catch (err) {
 		next(err);
 	}

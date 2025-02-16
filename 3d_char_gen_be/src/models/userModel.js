@@ -34,6 +34,43 @@ export const updateUserService = async (id, name, email) => {
 	return result.rows[0];
 };
 
+export const createUserCustomService = async (id, body) => {
+	const fields = [];
+	const values = [];
+	const placeholders = [];
+
+	let index = 1;
+
+	// body의 키-값 쌍을 순회하며 null이 아닌 것만 처리
+	for (const [key, value] of Object.entries(body)) {
+		if (value !== null && key !== 'username') {
+			fields.push(`"${key}"`);
+			values.push(value);
+			placeholders.push(`$${index}`);
+			index++;
+		}
+	}
+
+	// userid는 무조건 넣는다고 가정
+	fields.push('userid');
+	values.push(id);
+	placeholders.push(`$${index}`);
+
+	const query = `
+			INSERT INTO usercustom (${fields.join(', ')})
+			VALUES (${placeholders.join(', ')})
+			RETURNING *
+		`;
+
+	const result = await pool.query(query, values);
+
+	if (result.rows.length > 0) {
+		return result.rows[0];
+	} else {
+		throw new Error("User Custom creation failed");
+	}
+};
+
 export const getUserCustomByIdService = async (id) => {
 	const usernameResult = await pool.query("SELECT username FROM users WHERE id = $1", [id]);
 	const userCustomResult = await pool.query("SELECT * FROM usercustom WHERE userid = $1", [id]);
@@ -45,6 +82,8 @@ export const getUserCustomByIdService = async (id) => {
 	if (userCustom) {
 		delete userCustom.id;
 		delete userCustom.userid;
+	} else {
+		return null;
 	}
 
 	return {
@@ -54,10 +93,8 @@ export const getUserCustomByIdService = async (id) => {
 };
 
 export const updateUserCustomService = async (id, body) => {
-	// 필드 업데이트 함수
-	console.log(body);
 	const createUpdateQuery = (tableName, fieldsToUpdate, values, indexOffset = 1, id) => {
-		const setClause = fieldsToUpdate.map((field, idx) => `${field}=$${idx + indexOffset}`).join(", ");
+		const setClause = fieldsToUpdate.map((field, idx) => `"${field}"=$${idx + indexOffset}`).join(", ");
 		const query = `
       UPDATE ${tableName}
       SET ${setClause}
@@ -79,8 +116,8 @@ export const updateUserCustomService = async (id, body) => {
 	const userCustomFieldsToUpdate = [];
 	const userCustomValues = [];
 	const userCustomFields = [
-		'gender', 'location', 'bio', 'serial_num', 'head', 'eyes', 'eyebrows',
-		'nose', 'mouth', 'ears', 'hair', 'top', 'bottom', 'shoes'
+		'gender', 'location', 'bio', 'serial_num', 'Head', 'Eyes', 'Eyebrows',
+		'Nose', 'Mouth', 'Ears', 'Hair', 'Top', 'Bottom', 'Shoes'
 	];
 
 	userCustomFields.forEach((field) => {
@@ -100,9 +137,7 @@ export const updateUserCustomService = async (id, body) => {
 	}
 	if (userCustomFieldsToUpdate.length > 0) {
 		const userCustomQueryData = createUpdateQuery('usercustom', userCustomFieldsToUpdate, userCustomValues, userFieldsToUpdate.length + 1, id);
-		console.log(userCustomQueryData);
 		userCustomResult = await pool.query(userCustomQueryData.query, userCustomQueryData.values);
-		console.log(userCustomResult);
 	}
 
 	return {

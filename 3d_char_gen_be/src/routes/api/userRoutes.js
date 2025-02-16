@@ -6,6 +6,7 @@ import {
 	getUserById,
 	updateUser,
 	getUserCustomById,
+	createUserCustom,
 	updateUserCustom
 }
 	from "../../controllers/user/userController.js";
@@ -20,6 +21,7 @@ router.get("/users", getAllUsers);
 router.get("/user/:id", getUserById);
 router.put("/user/:id", validateUser, updateUser);
 
+router.post("/usercustom/:id", createUserCustom);
 router.get("/usercustom/:id", getUserCustomById);
 router.patch("/usercustom/:id", updateUserCustom);
 
