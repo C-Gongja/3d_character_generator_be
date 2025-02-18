@@ -19,16 +19,19 @@ CREATE TABLE IF NOT EXISTS customGroups (
 );
 
 -- customAssets
+-- Each assets have different color options so need to add colors 
 CREATE TABLE IF NOT EXISTS customAssets (
   id SERIAL PRIMARY KEY, 
   name VARCHAR(255) NOT NULL,
   thumbnail VARCHAR(255),
   url VARCHAR(255),
   groupId INT NOT NULL,
+	colors JSONB,
   FOREIGN KEY (groupId) REFERENCES customGroups (id) ON DELETE CASCADE
 );
 
 -- userCustom
+-- Each asset group JSONB will contains asset id and choosen color.
 CREATE TABLE IF NOT EXISTS userCustom (
 	id SERIAL PRIMARY KEY,
 	userid INT NOT NULL,
@@ -37,15 +40,18 @@ CREATE TABLE IF NOT EXISTS userCustom (
 	serialNum VARCHAR(50),
 	location VARCHAR(100),
   birthday DATE,
-	head INT,
-	eyes INT,
-	eyebrows INT,
-	nose INT,
-	mouth INT,
-	ears INT,
-	hair INT,
-	top INT,
-	bottom INT,
-	shoes INT,
-	CONSTRAINT fk_user FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE
+
+	"Head" JSONB,
+	"Eyes" JSONB,
+	"Eyebrows" JSONB,
+	"Nose" JSONB,
+	"Mouth" JSONB, 
+	"Ears" JSONB,
+	"Hair" JSONB,
+	"Top" JSONB,
+	"Bottom" JSONB,
+	"Shoes" JSONB,
+	"Skin" JSONB,
+
+	CONSTRAINT fk_color FOREIGN KEY (id) REFERENCES userCustom (id) ON DELETE CASCADE
 );

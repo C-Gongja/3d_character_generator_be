@@ -34,6 +34,27 @@ export const updateUserService = async (id, name, email) => {
 	return result.rows[0];
 };
 
+export const getUserCustomByIdService = async (id) => {
+	const usernameResult = await pool.query("SELECT username FROM users WHERE id = $1", [id]);
+	const userCustomResult = await pool.query("SELECT * FROM usercustom WHERE userid = $1", [id]);
+
+	const username = usernameResult.rows[0]?.username || null;
+	const userCustom = userCustomResult.rows[0] || null;
+
+	// id와 userid 필드를 삭제
+	if (userCustom) {
+		delete userCustom.id;
+		delete userCustom.userid;
+	} else {
+		return null;
+	}
+
+	return {
+		username,
+		userCustom,
+	};
+};
+
 export const createUserCustomService = async (id, body) => {
 	const fields = [];
 	const values = [];
@@ -44,10 +65,20 @@ export const createUserCustomService = async (id, body) => {
 	// body의 키-값 쌍을 순회하며 null이 아닌 것만 처리
 	for (const [key, value] of Object.entries(body)) {
 		if (value !== null && key !== 'username') {
-			fields.push(`"${key}"`);
-			values.push(value);
-			placeholders.push(`$${index}`);
-			index++;
+			// JSONB 필드는 JSON 객체 형식으로 처리
+			if (typeof value === 'object' && value !== null) {
+				// JSONB 필드는 JSON 객체를 그대로 넣을 수 있도록 처리
+				fields.push(`"${key}"`);
+				values.push(JSON.stringify(value)); // JSON 객체를 문자열로 변환
+				placeholders.push(`$${index}`);
+				index++;
+			} else {
+				// 일반적인 필드는 그대로 처리
+				fields.push(`"${key}"`);
+				values.push(value);
+				placeholders.push(`$${index}`);
+				index++;
+			}
 		}
 	}
 
@@ -69,27 +100,6 @@ export const createUserCustomService = async (id, body) => {
 	} else {
 		throw new Error("User Custom creation failed");
 	}
-};
-
-export const getUserCustomByIdService = async (id) => {
-	const usernameResult = await pool.query("SELECT username FROM users WHERE id = $1", [id]);
-	const userCustomResult = await pool.query("SELECT * FROM usercustom WHERE userid = $1", [id]);
-
-	const username = usernameResult.rows[0]?.username || null;
-	const userCustom = userCustomResult.rows[0] || null;
-
-	// id와 userid 필드를 삭제
-	if (userCustom) {
-		delete userCustom.id;
-		delete userCustom.userid;
-	} else {
-		return null;
-	}
-
-	return {
-		username,
-		userCustom,
-	};
 };
 
 export const updateUserCustomService = async (id, body) => {
