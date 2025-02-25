@@ -6,8 +6,8 @@ export const getAllUsersService = async () => {
 	return result.rows;
 };
 
-export const getUserByIdService = async (id) => {
-	const result = await pool.query("SELECT name, username, email, created_at FROM users WHERE id = $1", [id]);
+export const getUserByIdService = async (user) => {
+	const result = await pool.query("SELECT id, name, username, email FROM users WHERE id = $1", [user.id]);
 	return result.rows[0] || null;
 };
 

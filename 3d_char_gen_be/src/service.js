@@ -8,6 +8,7 @@ import authRoutes from "./routes/api/authRoutes.js"
 import customRoutes from "./routes/api/customRoutes.js"
 import errorHandling from './middleware/errorHandler.js';
 import createTablesFromFile from "./data/createTables.js";
+import cookieParser from 'cookie-parser';
 import { port } from './config/env.js';
 
 dotenv.config();
@@ -30,8 +31,12 @@ app.use(cors(corsOptions));
 //CREATE TABLES
 createTablesFromFile();
 
+// cookie parser
+app.use(cookieParser());
+
 //ROUTES
 app.use("/api/auth", authRoutes);
+app.use("/api/profile", userRoutes);
 app.use("/api/custom", customRoutes);
 app.use("/api", userRoutes);
 

@@ -4,10 +4,11 @@ import { jwtSecret } from "../config/env.js";
 export const verifyToken = (req, res, next) => {
 	const authHeader = req.headers['authorization'];
 	const token = authHeader && authHeader.split(' ')[1];
+	console.log("access token: ", token);
 
 	if (!token) return res.status(401).json({ message: 'Access token is missing' });
 
-	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+	jwt.verify(token, jwtSecret, (err, user) => {
 		if (err) {
 			if (err.name === 'TokenExpiredError') {
 				return res.status(401).json({ message: 'Access token has expired' });

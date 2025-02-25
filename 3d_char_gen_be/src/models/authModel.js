@@ -53,9 +53,6 @@ export const loginService = async ({ email, password }) => {
 		// JWT 토큰 생성
 		const { accessToken, refreshToken } = await generateToken(userInfo);
 
-		console.log("Access Token: ", accessToken);
-		console.log("Refresh Token: ", refreshToken);
-
 		return { user: userInfo, accessToken, refreshToken };
 	} catch (error) {
 		throw new Error(error.message);

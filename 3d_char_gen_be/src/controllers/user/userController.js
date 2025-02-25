@@ -39,7 +39,7 @@ export const getAllUsers = async (req, res, next) => {
 
 export const getUserById = async (req, res, next) => {
 	try {
-		const user = await getUserByIdService(req.params.id);
+		const user = await getUserByIdService(req.user);
 		if (!user) return handleResponse(res, 404, "User not found");
 		handleResponse(res, 201, "user fetched successfully", user);
 	} catch (err) {
