@@ -4,7 +4,6 @@ import { jwtSecret } from "../config/env.js";
 export const verifyToken = (req, res, next) => {
 	const authHeader = req.headers['authorization'];
 	const token = authHeader && authHeader.split(' ')[1];
-	console.log("access token: ", token);
 
 	if (!token) return res.status(401).json({ message: 'Access token is missing' });
 

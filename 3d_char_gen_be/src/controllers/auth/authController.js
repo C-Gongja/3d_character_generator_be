@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { jwtSecret } from "../../config/env.js";
 import { signUpService, loginService } from '../../models/authModel.js';
 import { generateToken } from '../../util/generateToken.js'
+import { AuthErrorHandler } from "../../util/error/authErrorHandler.js";
 
 export const signUpController = async (req, res) => {
 
@@ -22,16 +23,33 @@ export const signUpController = async (req, res) => {
 			accessToken,
 		});
 	} catch (error) {
-		return res.status(400).json({ message: error.message });
+		if (error instanceof AuthErrorHandler) {
+			return res.status(401).json({
+				success: false,
+				errorCode: error.code,
+				message: error.message,
+			});
+		}
+
+		//internal error
+		console.error('Login error:', error.message);
+		return res.status(500).json({
+			success: false,
+			errorCode: 'INTERNAL_SERVER_ERROR',
+			message: 'An unexpected error occurred',
+		});
 	}
 };
 
-// 로그인 컨트롤러
 export const loginController = async (req, res) => {
 	const { email, password } = req.body;
 
 	if (!email || !password) {
-		return res.status(400).json({ message: 'Email and Password are required' });
+		return res.status(400).json({
+			success: false,
+			errorCode: 'MISSING_FIELDS',
+			message: 'Email and password are required',
+		});
 	}
 
 	try {
@@ -51,7 +69,21 @@ export const loginController = async (req, res) => {
 			accessToken,
 		});
 	} catch (error) {
-		return res.status(400).json({ message: error.message });
+		if (error instanceof AuthErrorHandler) {
+			return res.status(401).json({
+				success: false,
+				errorCode: error.code,
+				message: error.message,
+			});
+		}
+
+		//internal error
+		console.error('Login error:', error.message);
+		return res.status(500).json({
+			success: false,
+			errorCode: 'INTERNAL_SERVER_ERROR',
+			message: 'An unexpected error occurred',
+		});
 	}
 };
 
@@ -70,7 +102,6 @@ export const refreshTokenController = async (req, res) => {
 	if (!refreshToken) {
 		return res.status(401).send('Access Denied. No refresh token provided.');
 	}
-	console.log("refresh token: ", refreshToken);
 	try {
 		// why this is working but not the regular verify
 		// verify() is async function so we have to await to finish verify to use inside try...?
@@ -104,8 +135,8 @@ export const refreshTokenController = async (req, res) => {
 	} catch (error) {
 		console.log('Refresh token verification error:', error.name, error.message);
 		if (error.name === 'TokenExpiredError') {
-			return res.status(401).json({ message: 'Refresh token has expired' });
+			return res.status(403).json({ message: 'Refresh token has expired' });
 		}
-		return res.status(401).json({ message: 'Invalid refresh token' });
+		return res.status(403).json({ message: 'Invalid refresh token' });
 	}
 };
